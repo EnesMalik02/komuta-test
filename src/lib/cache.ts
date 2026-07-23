@@ -4,11 +4,14 @@ declare global {
   var valkeyClient: Redis | undefined;
 }
 
+const valkeyUrl = process.env.VALKEY_URL ?? "rediss://localhost:6379";
+
 export const cache =
   global.valkeyClient ??
-  new Redis(process.env.VALKEY_URL as string, {
+  new Redis(valkeyUrl, {
+    lazyConnect: true,
     tls: {
-      servername: new URL(process.env.VALKEY_URL as string).hostname,
+      servername: new URL(valkeyUrl).hostname,
       rejectUnauthorized: false,
     },
   });
