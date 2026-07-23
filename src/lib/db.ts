@@ -4,10 +4,14 @@ declare global {
   var pgPool: Pool | undefined;
 }
 
+function connectionStringWithoutSslMode(url: string) {
+  return url.replace(/([?&])sslmode=[^&]*&?/, "$1").replace(/[?&]$/, "");
+}
+
 export const pool =
   global.pgPool ??
   new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: connectionStringWithoutSslMode(process.env.DATABASE_URL as string),
     ssl: { rejectUnauthorized: false },
   });
 
